@@ -28,7 +28,7 @@ allprojects {
 Add the dependency
 
 ```groovy
-implementation 'com.github.zacharee:AndroidPdfViewer:Tag'
+implementation 'com.github.zacharee:AndroidPdfViewer:2026.01.05'
 ```
 
 (Optiona, but recommended) For more direct control and to stay up to date with the underlying PDF rendering engine, you may also want to depend directly on
@@ -59,3 +59,14 @@ implementation 'io.legere:pdfiumandroid:Version'
 ### Original documentation for reference
 
 - For the original repo API references and usage examples, please refer to [this page](./docs/ORIGINAL_DOCUMENTATION.md).
+
+### Contributing
+
+#### Releasing a new version
+
+This package is distributed via the [JitPack repository](https://jitpack.io/#kishannareshpal/AndroidPdfViewer).
+
+1. Update the `README` installation instruction to point to the new Tag
+2. Create a new GH release tagging main with the version name format: `YYYY.MM.DD.n` (where `n` indicates the release count of the day starting at 1)
+3. JitPack will automatically build the necessary assets, which you can see at: https://jitpack.io/#kishannareshpal/AndroidPdfViewer
+4. That's it - once JitPack finishes building, you'll be able to install it on your apps.
