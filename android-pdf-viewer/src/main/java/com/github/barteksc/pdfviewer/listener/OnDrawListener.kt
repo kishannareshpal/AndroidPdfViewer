@@ -24,7 +24,7 @@ import android.graphics.Canvas
  * This interface allows an extern class to draw
  * something on the PDFView canvas, above all images.
  */
-interface OnDrawListener {
+fun interface OnDrawListener {
     /**
      * This method is called when the PDFView is
      * drawing its view.

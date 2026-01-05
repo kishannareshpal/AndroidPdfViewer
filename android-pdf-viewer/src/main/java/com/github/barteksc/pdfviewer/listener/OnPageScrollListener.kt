@@ -22,7 +22,7 @@ package com.github.barteksc.pdfviewer.listener
  * Implements this interface to receive events from PDFView
  * when a page has been scrolled
  */
-interface OnPageScrollListener {
+fun interface OnPageScrollListener {
     /**
      * Called on every move while scrolling
      *

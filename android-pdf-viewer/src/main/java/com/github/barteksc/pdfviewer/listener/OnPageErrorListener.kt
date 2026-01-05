@@ -18,7 +18,7 @@
  */
 package com.github.barteksc.pdfviewer.listener
 
-interface OnPageErrorListener {
+fun interface OnPageErrorListener {
     /**
      * Called if error occurred while loading PDF page
      * @param t Throwable with error
