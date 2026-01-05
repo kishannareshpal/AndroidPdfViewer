@@ -268,6 +268,9 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
     var spacingPx: Int = 0
         private set
 
+    var contentPaddingPx: RectF = RectF(0f, 0f, 0f, 0f)
+        private set
+
     /**
      * Add dynamic spacing to fit each page separately on the screen.
      */
@@ -336,6 +339,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
                     isOnDualPageMode,
                     isSwipeVertical,
                     spacingPx,
+                    contentPaddingPx,
                     isAutoSpacingEnabled,
                     isFitEachPage,
                     isOnLandscapeOrientation,
@@ -362,7 +366,14 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
         }
 
         page = pdfFile!!.determineValidPageNumberFrom(page)
-        val offset = if (page == 0) 0f else -pdfFile!!.getPageOffset(page, zoom)
+        var offset = -pdfFile!!.getPageOffset(page, zoom)
+
+        // If jumping to the first page, account for the start padding
+        // so we show the "container" edge instead of snapping to the content (document) edge.
+        if (page == 0) {
+            offset += pdfFile!!.getPaddingStart() * zoom
+        }
+
         if (this.isSwipeVertical) {
             if (withAnimation) {
                 animationManager.startYAnimation(currentYOffset, offset)
@@ -541,11 +552,13 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
 
         if (this.isSwipeVertical) {
             relativeCenterPointInStripXOffset = centerPointInStripXOffset / pdfFile!!.maxPageWidth
+            val paddedOffset = centerPointInStripYOffset - contentPaddingPx.top * zoom
             relativeCenterPointInStripYOffset =
-                centerPointInStripYOffset / pdfFile!!.getDocLen(zoom)
+                paddedOffset / (pdfFile!!.getDocLen(zoom) - (contentPaddingPx.top + contentPaddingPx.bottom) * zoom)
         } else {
             relativeCenterPointInStripXOffset =
                 centerPointInStripXOffset / pdfFile!!.getDocLen(zoom)
+
             relativeCenterPointInStripYOffset = centerPointInStripYOffset / pdfFile!!.maxPageHeight
         }
 
@@ -884,6 +897,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
     fun moveTo(offsetX: Float, offsetY: Float, moveHandle: Boolean = true) {
         var offsetX = offsetX
         var offsetY = offsetY
+
         if (this.isSwipeVertical) {
             // Check X offset
             val scaledPageWidth = toCurrentScale(pdfFile!!.maxPageWidth)
@@ -898,14 +912,19 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             }
 
             // Check Y offset
-            val contentHeight = pdfFile!!.getDocLen(zoom)
-            if (contentHeight < height) { // whole document height visible on screen
-                offsetY = (height - contentHeight) / 2
+            val docLen = pdfFile!!.getDocLen(zoom)
+            if (docLen < height) {
+                // Center the entire document (which includes padding)
+                offsetY = (height - docLen) / 2
             } else {
-                if (offsetY > 0) { // top visible
-                    offsetY = 0f
-                } else if (offsetY + contentHeight < height) { // bottom visible
-                    offsetY = -contentHeight + height
+                // Standard scroll bounds
+                val topBound = 0f // PdfFile already adds the top padding offset internally
+                val bottomBound = -docLen + height
+
+                if (offsetY > topBound) {
+                    offsetY = topBound
+                } else if (offsetY < bottomBound) {
+                    offsetY = bottomBound
                 }
             }
 
@@ -930,14 +949,18 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             }
 
             // Check X offset
-            val contentWidth = pdfFile!!.getDocLen(zoom)
-            if (contentWidth < width) { // whole document width visible on screen
-                offsetX = (width - contentWidth) / 2
+            val docLen = pdfFile!!.getDocLen(zoom)
+            if (docLen < width) {
+                offsetY = (width - docLen) / 2
             } else {
-                if (offsetX > 0) { // left visible
-                    offsetX = 0f
-                } else if (offsetX + contentWidth < width) { // right visible
-                    offsetX = -contentWidth + width
+                // FIX: Standard scroll bounds for horizontal
+                val leftBound = 0f
+                val rightBound = -docLen + width
+
+                if (offsetX > leftBound) {
+                    offsetX = leftBound
+                } else if (offsetX < rightBound) {
+                    offsetX = rightBound
                 }
             }
 
@@ -1054,6 +1077,13 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
         } else if (edge == SnapEdge.END) {
             offset = offset - length + pageLength
         }
+
+        // If snapping to Start of Page 0, subtract padding to snap to the
+        // container top instead of content (document) top.
+        if (pageIndex == 0 && edge == SnapEdge.START) {
+            offset -= pdfFile!!.getPaddingStart() * zoom
+        }
+
         return offset
     }
 
@@ -1235,6 +1265,15 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
         this.spacingPx = getDP(context, spacingDp)
     }
 
+    private fun setContentPadding(contentPadding: Rect) {
+        this.contentPaddingPx = RectF(
+            contentPadding.left.toFloat(),
+            contentPadding.top.toFloat(),
+            contentPadding.right.toFloat(),
+            contentPadding.bottom.toFloat()
+        )
+    }
+
     private fun setAutoSpacing(autoSpacing: Boolean) {
         this.isAutoSpacingEnabled = autoSpacing
     }
@@ -1358,6 +1397,8 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
         private var antialiasing = true
 
         private var spacing = 0
+
+        private var contentPadding = Rect(0,0,0,0)
 
         private var autoSpacing = false
 
@@ -1486,6 +1527,11 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             return this
         }
 
+        fun contentPadding(left: Int, top: Int, right: Int, bottom: Int): Configurator {
+            this.contentPadding = Rect(left, top, right, bottom)
+            return this
+        }
+
         fun autoSpacing(autoSpacing: Boolean): Configurator {
             this.autoSpacing = autoSpacing
             return this
@@ -1549,6 +1595,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             pdfView.scrollHandle = scrollHandle
             pdfView.enableAntialiasing(antialiasing)
             pdfView.setSpacing(spacing)
+            pdfView.setContentPadding(contentPadding)
             pdfView.setAutoSpacing(autoSpacing)
             pdfView.pageFitPolicy = pageFitPolicy
             pdfView.isFitEachPage = fitEachPage

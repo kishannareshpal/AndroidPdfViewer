@@ -45,6 +45,7 @@ internal class PdfFile(
     private val isVertical: Boolean,
     /** Fixed spacing between pages in pixels  */
     private val spacingPx: Int,
+    private val contentPadding: RectF,
     /** Calculate spacing automatically so each page fits on it's own in the center of the view  */
     private val autoSpacing: Boolean,
     /**
@@ -116,10 +117,20 @@ internal class PdfFile(
      */
     fun recalculatePageSizes(viewSize: Size) {
         pageSizes.clear()
+
+        val availableWidth = viewSize.width - (contentPadding.left + contentPadding.right).toInt()
+        val availableHeight = viewSize.height - (contentPadding.top + contentPadding.bottom).toInt()
+
+        val availableSize = Size(
+            max(0, availableWidth),
+            max(0, availableHeight)
+        )
+
         val calculator = PageSizeCalculator(
             pageFitPolicy, originalMaxWidthPageSize,
-            originalMaxHeightPageSize, viewSize, fitEachPage
+            originalMaxHeightPageSize, availableSize, fitEachPage
         )
+
         maxWidthPageSize = calculator.optimalMaxWidthPageSize
         maxHeightPageSize = calculator.optimalMaxHeightPageSize
 
@@ -155,10 +166,10 @@ internal class PdfFile(
         get() = if (isVertical) maxWidthPageSize else maxHeightPageSize
 
     val maxPageWidth: Float
-        get() = this.maxPageSize!!.width
+        get() = this.maxPageSize!!.width + contentPadding.left + contentPadding.right
 
     val maxPageHeight: Float
-        get() = this.maxPageSize!!.height
+        get() = this.maxPageSize!!.height + contentPadding.top + contentPadding.bottom
 
     private fun prepareAutoSpacing(viewSize: Size) {
         pageSpacing.clear()
@@ -177,21 +188,34 @@ internal class PdfFile(
 
     private fun prepareDocLen() {
         var length = 0f
-        for (i in 0..<this.pagesCount) {
+        for (i in 0 until this.pagesCount) {
             val pageSize = pageSizes[i]
             length += if (isVertical) pageSize.height else pageSize.width
+
             if (autoSpacing) {
                 length += pageSpacing[i]
             } else if (i < this.pagesCount - 1) {
                 length += spacingPx.toFloat()
             }
         }
+
+        length += if (this.isVertical) {
+            contentPadding.top + contentPadding.bottom
+        } else {
+            contentPadding.left + contentPadding.right
+        }
+
         documentLength = length
     }
 
     private fun preparePagesOffset() {
         pageOffsets.clear()
-        var offset = 0f
+        var offset = if (this.isVertical) {
+            contentPadding.top
+        } else {
+            contentPadding.left
+        }
+
         for (i in 0..<this.pagesCount) {
             val pageSize = pageSizes[i]
             val size = if (isVertical) pageSize.height else pageSize.width
@@ -209,6 +233,10 @@ internal class PdfFile(
                 offset += size + spacingPx
             }
         }
+    }
+
+    fun getPaddingStart(): Float {
+        return if (isVertical) contentPadding.top else contentPadding.left
     }
 
     fun getDocLen(zoom: Float): Float {
@@ -251,9 +279,15 @@ internal class PdfFile(
 
     fun getPageAtOffset(offset: Float, zoom: Float): Int {
         var currentPage = 0
-        for (i in 0..<this.pagesCount) {
-            val off = pageOffsets[i] * zoom - getPageSpacing(i, zoom) / 2f
 
+        val padding = if (this.isVertical) {
+            contentPadding.top
+        } else {
+            contentPadding.left
+        }
+
+        for (i in 0..<this.pagesCount) {
+            val off = (pageOffsets[i] - padding) * zoom - getPageSpacing(i, zoom) / 2f
             if (off >= offset) {
                 break
             }
