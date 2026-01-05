@@ -18,7 +18,7 @@
  */
 package com.github.barteksc.pdfviewer.listener
 
-interface OnRenderListener {
+fun interface OnRenderListener {
     /**
      * Called only once, when document is rendered
      * @param nbPages number of pages

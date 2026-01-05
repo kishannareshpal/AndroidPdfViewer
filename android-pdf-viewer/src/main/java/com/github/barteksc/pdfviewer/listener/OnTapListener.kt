@@ -24,7 +24,7 @@ import android.view.MotionEvent
  * Implement this interface to receive events from PDFView
  * when view has been touched
  */
-interface OnTapListener {
+fun interface OnTapListener {
     /**
      * Called when the user has a tap gesture, before processing scroll handle toggling
      *
