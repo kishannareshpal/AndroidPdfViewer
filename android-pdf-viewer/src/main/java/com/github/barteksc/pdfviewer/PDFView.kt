@@ -1538,7 +1538,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             return this
         }
 
-        fun contentPadding(left: Int, top: Int, right: Int, bottom: Int): Configurator {
+        fun contentPadding(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0): Configurator {
             this.contentPadding = Rect(left, top, right, bottom)
             return this
         }
