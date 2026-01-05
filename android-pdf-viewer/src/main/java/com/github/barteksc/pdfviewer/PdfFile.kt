@@ -18,8 +18,6 @@
  */
 package com.github.barteksc.pdfviewer
 
-import android.graphics.Bitmap
-import android.graphics.Rect
 import android.graphics.RectF
 import android.util.SizeF
 import com.github.barteksc.pdfviewer.exception.PageRenderingException
@@ -269,11 +267,13 @@ internal class PdfFile(
     fun getSecondaryPageOffset(pageIndex: Int, zoom: Float): Float {
         val pageSize = getPageSize(pageIndex)
         if (isVertical) {
-            val maxWidth = this.maxPageWidth
-            return zoom * (maxWidth - pageSize.width) / 2 //x
+            val availableWidth = maxPageWidth - (contentPadding.left + contentPadding.right)
+            val centeringOffset = (availableWidth - pageSize.width) / 2
+            return zoom * (contentPadding.left + centeringOffset)
         } else {
-            val maxHeight = this.maxPageHeight
-            return zoom * (maxHeight - pageSize.height) / 2 //y
+            val availableHeight = maxPageHeight - (contentPadding.top + contentPadding.bottom)
+            val centeringOffset = (availableHeight - pageSize.height) / 2
+            return zoom * (contentPadding.top + centeringOffset)
         }
     }
 

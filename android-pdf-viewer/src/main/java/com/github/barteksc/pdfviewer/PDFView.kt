@@ -749,12 +749,21 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
 
         if (this.isSwipeVertical) {
             localTranslationY = pdfFile!!.getPageOffset(part.page, zoom)
-            val maxWidth = pdfFile!!.maxPageWidth
-            localTranslationX = toCurrentScale(maxWidth - size.width) / 2
+
+            val maxWidth = pdfFile!!.maxPageWidth // This includes Left + Right padding
+            val totalPadding = contentPaddingPx.left + contentPaddingPx.right
+            val availableWidth = maxWidth - totalPadding
+
+            localTranslationX = toCurrentScale(contentPaddingPx.left + (availableWidth - size.width) / 2)
         } else {
             localTranslationX = pdfFile!!.getPageOffset(part.page, zoom)
+
+            // Respect asymetric padding
             val maxHeight = pdfFile!!.maxPageHeight
-            localTranslationY = toCurrentScale(maxHeight - size.height) / 2
+            val totalPadding = contentPaddingPx.top + contentPaddingPx.bottom
+            val availableHeight = maxHeight - totalPadding
+
+            localTranslationY = toCurrentScale(contentPaddingPx.top + (availableHeight - size.height) / 2)
         }
         canvas.translate(localTranslationX, localTranslationY)
 
@@ -1176,7 +1185,9 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             Log.e(TAG, "Cannot fit, document not rendered yet")
             return
         }
-        zoomTo(width / pdfFile!!.getPageSize(page).width)
+
+        val availableWidth = width - (contentPaddingPx.left + contentPaddingPx.right)
+        zoomTo(availableWidth / pdfFile!!.getPageSize(page).width)
         jumpTo(page)
     }
 
