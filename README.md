@@ -28,7 +28,7 @@ allprojects {
 Add the dependency
 
 ```groovy
-implementation 'com.github.zacharee:AndroidPdfViewer:2026.01.05'
+implementation 'com.github.zacharee:AndroidPdfViewer:2026.01.05.2'
 ```
 
 (Optional, but recommended) For more direct control and to stay up to date with the underlying PDF 
