@@ -268,6 +268,10 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
     var spacingPx: Int = 0
         private set
 
+    /**
+     * Spacing around the entire document (not individual (insets). Useful for applying safe area
+     * insets.
+     */
     var contentPadding: RectF = RectF(0f, 0f, 0f, 0f)
         private set
 
