@@ -12,7 +12,7 @@
 [![Release](https://jitpack.io/v/kishannareshpal/AndroidPdfViewer.svg)](https://jitpack.io/#kishannareshpal/AndroidPdfViewer)
 
 
-### Installation
+## Installation
 
 Add JitPack to your `build.gradle`:
 
@@ -39,7 +39,7 @@ implementation 'io.legere:pdfiumandroid:Version'
 ```
 
 
-### Changes in this fork (`com.github.kishannareshpal:AndroidPdfViewer`):
+## Changes in this fork
 
 - Used by [@kishannareshpal/expo-pdf](https://github.com/kishannareshpal/expo-pdf)
 - Added support for content insets via a new option on the PDFView builder:
@@ -56,13 +56,29 @@ implementation 'io.legere:pdfiumandroid:Version'
   This allows padding to be applied around the entire document while still supporting pan and zoom in those areas.
   A common use case is applying safe-area insets while keeping the PDF viewer fullscreen.
 
-### Original documentation for reference
+## Usage
+
+> [!IMPORTANT]
+> This fork does not change the package name, which means that while using this fork you will be importing 
+> the same package name as the original library which is `com.github.barteksc.pdfviewer`. 
+> - `com.kishannareshpal.pdfviewer` is only used as the package name for installation. 
+> 
+> For example:
+> 
+> ```kotlin
+> import com.github.barteksc.pdfviewer.PDFView
+> 
+> val pdfView = PDFView(ctx)
+> pdfView.fromUri(Uri).load()
+> ```
+
+### Original documentation for more information
 
 - For the original repo API references and usage examples, please refer to [this page](./docs/ORIGINAL_DOCUMENTATION.md).
 
-### Contributing
+## Contributing
 
-#### Releasing a new version
+### Releasing a new version
 
 This package is distributed via the [JitPack repository](https://jitpack.io/#kishannareshpal/AndroidPdfViewer).
 
@@ -70,3 +86,24 @@ This package is distributed via the [JitPack repository](https://jitpack.io/#kis
 2. Create a new GH release tagging main with the version name format: `YYYY.MM.DD.n` (where `n` indicates the release count of the day starting at 1)
 3. JitPack will automatically build the necessary assets, which you can see at: https://jitpack.io/#kishannareshpal/AndroidPdfViewer
 4. That's it - once JitPack finishes building, you'll be able to install it on your apps.
+
+## License
+
+Created with the help of android-pdfview by [Joan Zapata](http://joanzapata.com/)
+
+```
+Copyright 2026 Kishan Jadav
+Copyright 2017 Bartosz Schiller
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
