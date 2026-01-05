@@ -31,8 +31,8 @@ Add the dependency
 implementation 'com.github.zacharee:AndroidPdfViewer:2026.01.05'
 ```
 
-(Optiona, but recommended) For more direct control and to stay up to date with the underlying PDF rendering engine, you may also want to depend directly on
-[PdfiumAndroidKt](https://github.com/johngray1965/PdfiumAndroidKt):
+(Optional, but recommended) For more direct control and to stay up to date with the underlying PDF 
+rendering engine, you may also want to depend directly on [PdfiumAndroidKt](https://github.com/johngray1965/PdfiumAndroidKt):
 
 ```groovy
 implementation 'io.legere:pdfiumandroid:Version'
