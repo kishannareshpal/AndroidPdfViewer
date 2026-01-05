@@ -1,11 +1,20 @@
+# Android PDF Viewer
+
 > [!NOTE]
 >
-> This is a fork of https://github.com/zacharee/AndroidPdfViewer which itself is a fork of the unmaintained
-> https://github.com/barteksc/AndroidPdfViewerV2.
+> This is a fork of [zacharee/AndroidPdfViewer](https://github.com/zacharee/AndroidPdfViewer) which 
+> itself is a fork of the unmaintained [barteksc/AndroidPdfViewerV2](https://github.com/barteksc/AndroidPdfViewerV2).
+>
+> Credit goes to the original authors and the many contributors across the various forks that have kept 
+> this excellent PDF viewer alive. intend to keep this fork reasonably up to date with upstream changes. 
+> Pull requests are welcome.
 
-[![Release](https://jitpack.io/v/zacharee/AndroidPdfViewer.svg)](https://jitpack.io/#zacharee/AndroidPdfViewer)
+[![Release](https://jitpack.io/v/kishannareshpal/AndroidPdfViewer.svg)](https://jitpack.io/#kishannareshpal/AndroidPdfViewer)
 
-Add to `build.gradle`:
+
+### Installation
+
+Add JitPack to your `build.gradle`:
 
 ```groovy
 allprojects {
@@ -16,31 +25,37 @@ allprojects {
 }
 ```
 
-Add the dependency:
+Add the dependency
 
 ```groovy
-implementation 'com.github.kishannareshpal:AndroidPdfViewer:Tag'
+implementation 'com.github.zacharee:AndroidPdfViewer:Tag'
 ```
 
-Consider also depending directly on [PdfiumAndroidKt](https://github.com/johngray1965/PdfiumAndroidKt) in order to stay
-up-to-date on the actual PDF rendering logic
+(Optiona, but recommended) For more direct control and to stay up to date with the underlying PDF rendering engine, you may also want to depend directly on
+[PdfiumAndroidKt](https://github.com/johngray1965/PdfiumAndroidKt):
 
 ```groovy
 implementation 'io.legere:pdfiumandroid:Version'
 ```
 
----
 
+### Changes in this fork (`com.github.kishannareshpal:AndroidPdfViewer`):
 
-### Changes in this package (`com.github.kishannareshpal:AndroidPdfViewer`):
-
-- [x] Used by [kishannareshpal/expo-pdf](https://github.com/kishannareshpal/expo-pdf)
-- [x] Added support for content insets via a new `PdfView().contentPadding(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0).load()` option in the PDFView builder.
-  - This is useful to apply a padding around the entire document, while still allowing pan and zoom in 
-  those areas - for example - you could use this to apply safe area insets while maintaining the
-  PDF viewer fullscreen.
-
+- Used by [@kishannareshpal/expo-pdf](https://github.com/kishannareshpal/expo-pdf)
+- Added support for content insets via a new option on the PDFView builder:
+  ```kotlin
+  PdfView()
+    .contentPadding(
+        left = 0,
+        top = 0,
+        right = 0,
+        bottom = 0
+    )
+    .load()
+  ```
+  This allows padding to be applied around the entire document while still supporting pan and zoom in those areas.
+  A common use case is applying safe-area insets while keeping the PDF viewer fullscreen.
 
 ### Original documentation for reference
 
-- Please read the original documentation for additional API references and examples [here](./docs/ORIGINAL_DOCUMENTATION.md).
+- For the original repo API references and usage examples, please refer to [this page](./docs/ORIGINAL_DOCUMENTATION.md).
