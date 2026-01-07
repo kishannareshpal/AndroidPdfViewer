@@ -9,8 +9,6 @@
 > this excellent PDF viewer alive. intend to keep this fork reasonably up to date with upstream changes. 
 > Pull requests are welcome.
 
-[![Release](https://jitpack.io/v/kishannareshpal/AndroidPdfViewer.svg)](https://jitpack.io/#kishannareshpal/AndroidPdfViewer)
-
 
 ## Installation
 
@@ -27,8 +25,12 @@ allprojects {
 
 Add the dependency
 
+[![Release](https://jitpack.io/v/kishannareshpal/AndroidPdfViewer.svg)](https://jitpack.io/#kishannareshpal/AndroidPdfViewer)
+
 ```groovy
-implementation 'com.github.kishannareshpal:AndroidPdfViewer:2026.01.05.5'
+implementation 'com.github.kishannareshpal:AndroidPdfViewer:Version'
+
+// The latest "Version" can be found in GH Releases page or in the badge above.
 ```
 
 (Optional, but recommended) For more direct control and to stay up to date with the underlying PDF 
@@ -82,10 +84,11 @@ implementation 'io.legere:pdfiumandroid:Version'
 
 This package is distributed via the [JitPack repository](https://jitpack.io/#kishannareshpal/AndroidPdfViewer).
 
-1. Update the `README` installation instruction to point to the new Tag
-2. Create a new GH release tagging main with the version name format: `YYYY.MM.DD.n` (where `n` indicates the release count of the day starting at 1)
-3. JitPack will automatically build the necessary assets, which you can see at: https://jitpack.io/#kishannareshpal/AndroidPdfViewer
-4. That's it - once JitPack finishes building, you'll be able to install it on your apps.
+1. Update `CHANGELOG.md`
+2. Update installation instruction in `README.md` to point to the latest tag
+4. Create a new GH release tagging main with the version name format: `YYYY.MM.DD.n` (where `n` indicates the release count of the day starting at 1)
+5. JitPack will automatically build the necessary assets, which you can monitor at: https://jitpack.io/#kishannareshpal/AndroidPdfViewer
+6. That's it - once JitPack finishes building, you'll be able to install it in your apps.
 
 ## License
 
