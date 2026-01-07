@@ -2,13 +2,12 @@
 
 > [!NOTE]
 >
-> This is a fork of [zacharee/AndroidPdfViewer](https://github.com/zacharee/AndroidPdfViewer) which 
+> This is a fork of [zacharee/AndroidPdfViewer](https://github.com/zacharee/AndroidPdfViewer) which
 > itself is a fork of the unmaintained [barteksc/AndroidPdfViewerV2](https://github.com/barteksc/AndroidPdfViewerV2).
 >
-> Credit goes to the original authors and the many contributors across the various forks that have kept 
-> this excellent PDF viewer alive. intend to keep this fork reasonably up to date with upstream changes. 
+> Credit goes to the original authors and the many contributors across the various forks that have kept
+> this excellent PDF viewer alive. intend to keep this fork reasonably up to date with upstream changes.
 > Pull requests are welcome.
-
 
 ## Installation
 
@@ -33,15 +32,16 @@ implementation 'com.github.kishannareshpal:AndroidPdfViewer:Version'
 // The latest "Version" can be found in GH Releases page or in the badge above.
 ```
 
-(Optional, but recommended) For more direct control and to stay up to date with the underlying PDF 
+(Optional, but recommended) For more direct control and to stay up to date with the underlying PDF
 rendering engine, you may also want to depend directly on [PdfiumAndroidKt](https://github.com/johngray1965/PdfiumAndroidKt):
 
 ```groovy
 implementation 'io.legere:pdfiumandroid:Version'
 ```
 
-
 ## Changes in this fork
+
+Please see the updated [CHANGELOG.md](./CHANGELOG.md) for more details.
 
 - Used by [@kishannareshpal/expo-pdf](https://github.com/kishannareshpal/expo-pdf)
 - Added support for content insets via a new option on the PDFView builder:
@@ -57,19 +57,26 @@ implementation 'io.legere:pdfiumandroid:Version'
   ```
   This allows padding to be applied around the entire document while still supporting pan and zoom in those areas.
   A common use case is applying safe-area insets while keeping the PDF viewer fullscreen.
+- Added support for disabling auto center on view resize on the PDFView builder:
+  ```kotlin
+    PdfView()
+      .autoCenterOnResize(false) // defaults to true
+      .load()
+  ```
 
 ## Usage
 
 > [!IMPORTANT]
-> This fork does not change the package name, which means that while using this fork you will be importing 
-> the same package name as the original library which is `com.github.barteksc.pdfviewer`. 
-> - `com.kishannareshpal.pdfviewer` is only used as the package name for installation. 
-> 
+> This fork does not change the package name, which means that while using this fork you will be importing
+> the same package name as the original library which is `com.github.barteksc.pdfviewer`.
+>
+> - `com.kishannareshpal.pdfviewer` is only used as the package name for installation.
+>
 > For example:
-> 
+>
 > ```kotlin
 > import com.github.barteksc.pdfviewer.PDFView
-> 
+>
 > val pdfView = PDFView(ctx)
 > pdfView.fromUri(Uri).load()
 > ```
@@ -86,9 +93,9 @@ This package is distributed via the [JitPack repository](https://jitpack.io/#kis
 
 1. Update `CHANGELOG.md`
 2. Update installation instruction in `README.md` to point to the latest tag
-4. Create a new GH release tagging main with the version name format: `YYYY.MM.DD.n` (where `n` indicates the release count of the day starting at 1)
-5. JitPack will automatically build the necessary assets, which you can monitor at: https://jitpack.io/#kishannareshpal/AndroidPdfViewer
-6. That's it - once JitPack finishes building, you'll be able to install it in your apps.
+3. Create a new GH release tagging main with the version name format: `YYYY.MM.DD.n` (where `n` indicates the release count of the day starting at 1)
+4. JitPack will automatically build the necessary assets, which you can monitor at: https://jitpack.io/#kishannareshpal/AndroidPdfViewer
+5. That's it - once JitPack finishes building, you'll be able to install it in your apps.
 
 ## License
 
