@@ -17,14 +17,13 @@ package com.github.barteksc.pdfviewer.util
 
 import android.content.Context
 import android.util.TypedValue
+import androidx.core.util.TypedValueCompat
 
 object Util {
     @JvmStatic
     fun getDP(context: Context, dp: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp.toFloat(),
-            context.resources.displayMetrics,
-        ).toInt()
+        return TypedValueCompat
+            .dpToPx(dp.toFloat(), context.resources.displayMetrics)
+            .toInt()
     }
 }
