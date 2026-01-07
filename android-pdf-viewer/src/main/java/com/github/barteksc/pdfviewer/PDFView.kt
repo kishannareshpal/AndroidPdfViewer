@@ -255,6 +255,13 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
     private var renderDuringScale = false
 
     /**
+     * If true, preserves the current focal point (center of the screen) during view
+     * resizing or orientation changes. Prevents the scroll position from
+     * jumping unexpectedly when the coordinate system changes.
+     */
+    private var autoCenterOnResize = true
+
+    /**
      * Antialiasing and bitmap filtering
      */
     var isAntialiasing: Boolean = true
@@ -547,38 +554,39 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             return
         }
 
-        // calculates the position of the point which in the center of view relative to big strip
-        val centerPointInStripXOffset = -currentXOffset + oldw * 0.5f
-        val centerPointInStripYOffset = -currentYOffset + oldh * 0.5f
-
-        val relativeCenterPointInStripXOffset: Float
-        val relativeCenterPointInStripYOffset: Float
-
-        if (this.isSwipeVertical) {
-            relativeCenterPointInStripXOffset = centerPointInStripXOffset / pdfFile!!.maxPageWidth
-            val paddedOffset = centerPointInStripYOffset - contentPaddingInPx.top * zoom
-            relativeCenterPointInStripYOffset =
-                paddedOffset / (pdfFile!!.getDocLen(zoom) - (contentPaddingInPx.top + contentPaddingInPx.bottom) * zoom)
-        } else {
-            relativeCenterPointInStripXOffset =
-                centerPointInStripXOffset / pdfFile!!.getDocLen(zoom)
-
-            relativeCenterPointInStripYOffset = centerPointInStripYOffset / pdfFile!!.maxPageHeight
-        }
-
         animationManager.stopAll()
+
+        // Recalculate the page sizes for the new view size
         pdfFile!!.recalculatePageSizes(Size(w, h))
 
-        if (this.isSwipeVertical) {
-            currentXOffset = -relativeCenterPointInStripXOffset * pdfFile!!.maxPageWidth + w * 0.5f
-            currentYOffset =
-                -relativeCenterPointInStripYOffset * pdfFile!!.getDocLen(zoom) + h * 0.5f
-        } else {
-            currentXOffset =
-                -relativeCenterPointInStripXOffset * pdfFile!!.getDocLen(zoom) + w * 0.5f
-            currentYOffset = -relativeCenterPointInStripYOffset * pdfFile!!.maxPageHeight + h * 0.5f
+        if (this.autoCenterOnResize) {
+            // Calculates the position of the point which in the center of view relative to big strip
+            val centerPointInStripXOffset = -currentXOffset + oldw * 0.5f
+            val centerPointInStripYOffset = -currentYOffset + oldh * 0.5f
+
+            val relativeCenterPointInStripXOffset: Float
+            val relativeCenterPointInStripYOffset: Float
+
+            if (this.isSwipeVertical) {
+                relativeCenterPointInStripXOffset = centerPointInStripXOffset / pdfFile!!.maxPageWidth
+                val paddedOffset = centerPointInStripYOffset - contentPaddingInPx.top * zoom
+                relativeCenterPointInStripYOffset = paddedOffset / (pdfFile!!.getDocLen(zoom) - (contentPaddingInPx.top + contentPaddingInPx.bottom) * zoom)
+            } else {
+                relativeCenterPointInStripXOffset = centerPointInStripXOffset / pdfFile!!.getDocLen(zoom)
+                relativeCenterPointInStripYOffset = centerPointInStripYOffset / pdfFile!!.maxPageHeight
+            }
+
+            if (this.isSwipeVertical) {
+                currentXOffset = -relativeCenterPointInStripXOffset * pdfFile!!.maxPageWidth + w * 0.5f
+                currentYOffset = -relativeCenterPointInStripYOffset * pdfFile!!.getDocLen(zoom) + h * 0.5f
+            } else {
+                currentXOffset = -relativeCenterPointInStripXOffset * pdfFile!!.getDocLen(zoom) + w * 0.5f
+                currentYOffset = -relativeCenterPointInStripYOffset * pdfFile!!.maxPageHeight + h * 0.5f
+            }
+
+            moveTo(currentXOffset, currentYOffset)
         }
-        moveTo(currentXOffset, currentYOffset)
+
         loadPageByOffset()
     }
 
@@ -1291,6 +1299,10 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
         )
     }
 
+    private fun setAutoCenterOnResize(enabled: Boolean) {
+        this.autoCenterOnResize = enabled
+    }
+
     private fun setAutoSpacing(autoSpacing: Boolean) {
         this.isAutoSpacingEnabled = autoSpacing
     }
@@ -1416,6 +1428,8 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
         private var spacing = 0
 
         private var contentPadding = Rect(0, 0, 0, 0)
+
+        private var autoCenterOnResize = true
 
         private var autoSpacing = false
 
@@ -1550,8 +1564,12 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             right: Int = 0,
             bottom: Int = 0
         ): Configurator {
-
             this.contentPadding = Rect(left, top, right, bottom)
+            return this
+        }
+
+        fun autoCenterOnResize(enabled: Boolean): Configurator {
+            this.autoCenterOnResize = enabled
             return this
         }
 
@@ -1619,6 +1637,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             pdfView.enableAntialiasing(antialiasing)
             pdfView.setSpacing(spacing)
             pdfView.setContentPadding(contentPadding)
+            pdfView.setAutoCenterOnResize(autoCenterOnResize)
             pdfView.setAutoSpacing(autoSpacing)
             pdfView.pageFitPolicy = pageFitPolicy
             pdfView.isFitEachPage = fitEachPage
