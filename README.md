@@ -9,7 +9,7 @@
 > this excellent PDF viewer alive. I intend to keep this fork reasonably up to date with upstream changes and
 > pull requests, feature requests or suggestions are welcome.
 >
-> This library is being used in a PDF viewer library for React Native [`kishannareshpal/expo-pdf`](https://github.com/kishannareshpal/expo-pdf).
+> This library is also being used in a PDF viewer library for React Native [`kishannareshpal/expo-pdf`](https://github.com/kishannareshpal/expo-pdf).
 
 ## Installation
 
