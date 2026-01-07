@@ -6,8 +6,10 @@
 > itself is a fork of the unmaintained [barteksc/AndroidPdfViewerV2](https://github.com/barteksc/AndroidPdfViewerV2).
 >
 > Credit goes to the original authors and the many contributors across the various forks that have kept
-> this excellent PDF viewer alive. intend to keep this fork reasonably up to date with upstream changes.
-> Pull requests are welcome.
+> this excellent PDF viewer alive. I intend to keep this fork reasonably up to date with upstream changes and
+> pull requests, feature requests or suggestions are welcome.
+>
+> This library is being used in a PDF viewer library for React Native [`kishannareshpal/expo-pdf`](https://github.com/kishannareshpal/expo-pdf).
 
 ## Installation
 
