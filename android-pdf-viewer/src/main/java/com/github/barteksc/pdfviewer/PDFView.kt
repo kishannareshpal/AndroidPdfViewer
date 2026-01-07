@@ -270,9 +270,9 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
 
     /**
      * Spacing around the entire document (not individual (insets). Useful for applying safe area
-     * insets.
+     * insets. In px.
      */
-    var contentPadding: RectF = RectF(0f, 0f, 0f, 0f)
+    var contentPaddingInPx: Rect = Rect(0, 0, 0, 0)
         private set
 
     /**
@@ -343,7 +343,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
                     isOnDualPageMode,
                     isSwipeVertical,
                     spacingPx,
-                    contentPadding,
+                    contentPaddingInPx,
                     isAutoSpacingEnabled,
                     isFitEachPage,
                     isOnLandscapeOrientation,
@@ -556,9 +556,9 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
 
         if (this.isSwipeVertical) {
             relativeCenterPointInStripXOffset = centerPointInStripXOffset / pdfFile!!.maxPageWidth
-            val paddedOffset = centerPointInStripYOffset - contentPadding.top * zoom
+            val paddedOffset = centerPointInStripYOffset - contentPaddingInPx.top * zoom
             relativeCenterPointInStripYOffset =
-                paddedOffset / (pdfFile!!.getDocLen(zoom) - (contentPadding.top + contentPadding.bottom) * zoom)
+                paddedOffset / (pdfFile!!.getDocLen(zoom) - (contentPaddingInPx.top + contentPaddingInPx.bottom) * zoom)
         } else {
             relativeCenterPointInStripXOffset =
                 centerPointInStripXOffset / pdfFile!!.getDocLen(zoom)
@@ -755,19 +755,21 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             localTranslationY = pdfFile!!.getPageOffset(part.page, zoom)
 
             val maxWidth = pdfFile!!.maxPageWidth // This includes Left + Right padding
-            val totalPadding = contentPadding.left + contentPadding.right
+            val totalPadding = contentPaddingInPx.left + contentPaddingInPx.right
             val availableWidth = maxWidth - totalPadding
 
-            localTranslationX = toCurrentScale(contentPadding.left + (availableWidth - size.width) / 2)
+            localTranslationX =
+                toCurrentScale(contentPaddingInPx.left + (availableWidth - size.width) / 2)
         } else {
             localTranslationX = pdfFile!!.getPageOffset(part.page, zoom)
 
-            // Respect asymetric padding
+            // Respect asymmetric padding
             val maxHeight = pdfFile!!.maxPageHeight
-            val totalPadding = contentPadding.top + contentPadding.bottom
+            val totalPadding = contentPaddingInPx.top + contentPaddingInPx.bottom
             val availableHeight = maxHeight - totalPadding
 
-            localTranslationY = toCurrentScale(contentPadding.top + (availableHeight - size.height) / 2)
+            localTranslationY =
+                toCurrentScale(contentPaddingInPx.top + (availableHeight - size.height) / 2)
         }
         canvas.translate(localTranslationX, localTranslationY)
 
@@ -1190,7 +1192,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             return
         }
 
-        val availableWidth = width - (contentPadding.left + contentPadding.right)
+        val availableWidth = width - (contentPaddingInPx.left + contentPaddingInPx.right)
         zoomTo(availableWidth / pdfFile!!.getPageSize(page).width)
         jumpTo(page)
     }
@@ -1281,11 +1283,11 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
     }
 
     private fun setContentPadding(contentPadding: Rect) {
-        this.contentPadding = RectF(
-            contentPadding.left.toFloat(),
-            contentPadding.top.toFloat(),
-            contentPadding.right.toFloat(),
-            contentPadding.bottom.toFloat()
+        this.contentPaddingInPx = Rect(
+            getDP(context, contentPadding.left),
+            getDP(context, contentPadding.top),
+            getDP(context, contentPadding.right),
+            getDP(context, contentPadding.bottom)
         )
     }
 
@@ -1413,7 +1415,7 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
 
         private var spacing = 0
 
-        private var contentPadding = Rect(0,0,0,0)
+        private var contentPadding = Rect(0, 0, 0, 0)
 
         private var autoSpacing = false
 
@@ -1542,7 +1544,13 @@ open class PDFView(context: Context?, set: AttributeSet?) : RelativeLayout(conte
             return this
         }
 
-        fun contentPadding(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0): Configurator {
+        fun contentPadding(
+            left: Int = 0,
+            top: Int = 0,
+            right: Int = 0,
+            bottom: Int = 0
+        ): Configurator {
+
             this.contentPadding = Rect(left, top, right, bottom)
             return this
         }

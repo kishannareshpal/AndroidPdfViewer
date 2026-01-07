@@ -18,6 +18,7 @@
  */
 package com.github.barteksc.pdfviewer
 
+import android.graphics.Rect
 import android.graphics.RectF
 import android.util.SizeF
 import com.github.barteksc.pdfviewer.exception.PageRenderingException
@@ -43,7 +44,7 @@ internal class PdfFile(
     private val isVertical: Boolean,
     /** Fixed spacing between pages in pixels  */
     private val spacingPx: Int,
-    private val contentPadding: RectF,
+    private val contentPadding: Rect,
     /** Calculate spacing automatically so each page fits on it's own in the center of the view  */
     private val autoSpacing: Boolean,
     /**
@@ -209,9 +210,9 @@ internal class PdfFile(
     private fun preparePagesOffset() {
         pageOffsets.clear()
         var offset = if (this.isVertical) {
-            contentPadding.top
+            contentPadding.top.toFloat()
         } else {
-            contentPadding.left
+            contentPadding.left.toFloat()
         }
 
         for (i in 0..<this.pagesCount) {
@@ -233,7 +234,7 @@ internal class PdfFile(
         }
     }
 
-    fun getPaddingStart(): Float {
+    fun getPaddingStart(): Int {
         return if (isVertical) contentPadding.top else contentPadding.left
     }
 
