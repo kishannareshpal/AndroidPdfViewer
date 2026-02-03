@@ -12,6 +12,12 @@
 
 _This version does not introduce any user-facing changes._
 
+## 2026.02.03.1
+
+### 🐛 Bug fixes
+
+- Fixes rendering on Android 7 by downgrading `io.legere:pdfiumandroid` to `1.0.32` (#8 by @kishannareshpal)
+
 ## 2026.01.07.2
 
 ### 🎉 New features
