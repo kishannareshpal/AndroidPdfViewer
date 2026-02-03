@@ -65,6 +65,7 @@ Please see the updated [CHANGELOG.md](./CHANGELOG.md) for more details.
       .autoCenterOnResize(false) // defaults to true
       .load()
   ```
+- #8: Uses `io.legere:pdfiumandroid` version `1.0.32` instead of the current `1.0.35` due to versions >= `1.0.33` failing to render PDFs on Android 7 (which is supposed to be the minimal working SDK)
 
 ## Usage
 
