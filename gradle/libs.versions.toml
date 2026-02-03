@@ -5,7 +5,11 @@ coreKtx = "1.17.0"
 desugar_jdk_libs = "2.1.5"
 kotlin = "2.1.21"
 kotlinxCoroutinesAndroid = "1.10.2"
-pdfiumandroid = "1.0.35"
+# Remarks:
+# - We're explicitly using an old version (1.0.32) because versions 1.0.33 up to (at least) 1.0.35
+#   causes this specific issue on Android 7 (https://github.com/wonday/react-native-pdf/issues/979)
+#   which prevents PDFs to load. If a new version fixes it then please update to that version.
+pdfiumandroid = "1.0.32"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
